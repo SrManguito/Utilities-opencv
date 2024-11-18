@@ -58,10 +58,12 @@ int detectOnOff( Mat src_gray, double threshold_value, double th2){
  */
 char matusByteCharDemodulation(vector<int> package, int p_begin){
     int num = 0;
-    vector<int> pos = {1,2,3,4,6,7,8,9};
+    vector<int> pos = {1,2,3,4,5,6,7,8};
+    vector<int> square = {7,6,5,4,3,2,1,0};
 
     for(int i = 0; i<8; i++){
-        num += package[p_begin + pos[i]] * pow(2,i);
+        cout << package[p_begin + pos[i]] << " ";
+        num += package[p_begin + pos[i]] * pow(2,square[i]);
     }
 
     return static_cast<char>(num);
@@ -115,13 +117,14 @@ String detectAndDemodulate(vector<int> data, int header_len, int package_len){
         for(int j = 0; j < header_len; j++){
             win_sum += data[ i+j];
         }
-
-        if(win_sum = 5){
+        // std :: cout << win_sum << " ";
+        if(win_sum == 5){
             cout << "Header found" << endl;
+            
             message += matusByteCharDemodulation(data, (i + header_len));
             i += 9;
         }
-
+        win_sum = 0;
     }
     return message;
 
@@ -137,40 +140,40 @@ String detectAndDemodulate(vector<int> data, int header_len, int package_len){
  * 
  * @return An array of ints with the resulting detectión
  */
-vector<int> fWindow(VideoCapture vid, int win_size, double th1 , double th2 ){
+// vector<int> fWindow(VideoCapture vid, int win_size, double th1 , double th2 ){
 
-    int total_frames = vid.get(CAP_PROP_FRAME_COUNT);
-    // cout << total_frames << endl;
-    vector<int> decoded;
-    Mat frame;
-
-
-    for (int i = 0; i < total_frames - win_size + 1; i+= 2) {
-
-        vid.set(CAP_PROP_POS_FRAMES, i);
-        int current_sum = 0;
-
-        for (int j = 0; j < win_size; j++){
-
-            // cout << vid.get(CAP_PROP_POS_FRAMES) << " " ;
-            vid >> frame;
-            cvtColor(frame,frame, COLOR_RGB2GRAY);
-            int detection = detectOnOff(frame, th1, th2);
-            current_sum += detection;
-        }
+//     int total_frames = vid.get(CAP_PROP_FRAME_COUNT);
+//     // cout << total_frames << endl;
+//     vector<int> decoded;
+//     Mat frame;
 
 
-        if(current_sum >1){
-            decoded.push_back(1);
-        }
-        else{
-            decoded.push_back(0);
-        }
+//     for (int i = 0; i < total_frames - win_size + 1; i+= 2) {
+
+//         vid.set(CAP_PROP_POS_FRAMES, i);
+//         int current_sum = 0;
+
+//         for (int j = 0; j < win_size; j++){
+
+//             // cout << vid.get(CAP_PROP_POS_FRAMES) << " " ;
+//             vid >> frame;
+//             cvtColor(frame,frame, COLOR_RGB2GRAY);
+//             int detection = detectOnOff(frame, th1, th2);
+//             current_sum += detection;
+//         }
+
+
+//         if(current_sum >1){
+//             decoded.push_back(1);
+//         }
+//         else{
+//             decoded.push_back(0);
+//         }
         
                
-    }
+//     }
 
-    return decoded;
-};
+//     return decoded;
+// };
 
 

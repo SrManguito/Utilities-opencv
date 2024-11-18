@@ -24,7 +24,15 @@ static void Threshold_Demo( int, void* ){
      3: Threshold to Zero
      4: Threshold to Zero Inverted
     */
-    threshold( src_gray, dst, threshold_value, max_binary_value, threshold_type );
+    int rows = src_gray.rows;          // Number of rows (height)
+    int cols = src_gray.cols;          // Number of columns (width)
+
+    int width = 120, height = 120;
+    int startX = cols/2;
+    int startY = rows/2;
+
+    Mat cropped_image = src_gray(Range(startY - height,startY + height), Range(startX - width, startX + width));
+    threshold( cropped_image, dst, threshold_value, max_binary_value, threshold_type );
     int erosion_size = 10;
     int dilation_size = 10;
     Mat erosion_dst, dilation_dst;
@@ -38,22 +46,25 @@ static void Threshold_Demo( int, void* ){
                        Point( dilation_size, dilation_size ) );
     
     cv::erode(dst, erosion_dst, element_ero);
+    imshow( window_name, erosion_dst );
     cv::dilate(erosion_dst, dilation_dst, element_dil);
-    imshow( window_name, dilation_dst );
+
 }
 int main( int argc, char** argv )
 {
-    String imageName("Whatsapp/Upper.jpeg"); // by default
+    String imageName("Whatsapp/Close.jpeg"); // by default
     if (argc > 1)
     {
         imageName = argv[1];
     }
+    
     src = imread( samples::findFile( imageName ), IMREAD_COLOR ); // Load an image
     if (src.empty())
     {
         cout << "Cannot read the image: " << imageName << std::endl;
         return -1;
     }
+    imshow("Natural Source", src);
     cvtColor( src, src_gray, COLOR_BGR2GRAY ); // Convert the image to Gray
     namedWindow( window_name, WINDOW_AUTOSIZE ); // Create a window to display results
     createTrackbar( trackbar_type,

@@ -20,6 +20,6 @@ char binaryToChar(vector<int> binary);
 
 String detectAndDemodulate(vector<int> data, int header_len, int package_len);
 
-vector<int> fWindow(VideoCapture vid, int win_size, double th1, double th2);
+// vector<int> fWindow(VideoCapture vid, int win_size, double th1, double th2);
 
 #endif
